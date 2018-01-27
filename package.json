@@ -1,0 +1,26 @@
+{
+  "name": "cloud-based-file-converter",
+  "version": "0.0.1",
+  "description": "A Cloud Based File Conversion and Storage",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/harkrishnamekala/Cloud-based-File-Converter.git"
+  },
+  "keywords": [
+    "File",
+    "Conversion",
+    "Electron",
+    "Native",
+    "App"
+  ],
+  "author": "Harikrishna Mekala",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/harkrishnamekala/Cloud-based-File-Converter/issues"
+  },
+  "homepage": "https://github.com/harkrishnamekala/Cloud-based-File-Converter#readme"
+}
