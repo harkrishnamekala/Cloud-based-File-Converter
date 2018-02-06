@@ -27,6 +27,7 @@
     "dm-file-uploader": "^1.0.2",
     "dropify": "^0.2.2",
     "electron": "^1.7.12",
-    "fs": "0.0.1-security"
+    "fs": "0.0.1-security",
+    "jslint": "^0.12.0"
   }
 }

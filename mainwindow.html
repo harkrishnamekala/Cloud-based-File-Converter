@@ -99,19 +99,22 @@
         ipc.on('selected-directory', function (event, path) {
             document.getElementById('selected-file').innerHTML = `You selected: ${path}`
             alert(path)
-            var Sfilename = path.toString().replace(/^.*[\\\/]/, '')
-            alert(Sfilename)
-            contents = fs.readFile(path.toString(), 'utf-8', (err, data) => {
+            var fileobject = {
+                "name": "",
+                "filedata": "",
+                "encoding": 'utf-8'
+                };
+            
+            fileobject.name = path.toString().replace(/^.*[\\\/]/, '')
+
+            alert(fileobject.name)
+            fileobject.filedata = fs.readFile(path.toString(), 'utf-8', (err, data) => {
                 if (err) {
                     alert("An Error Occured Reading the File: " + err.message);
                     return;
                 }
-                var fileobject = {
-                    name: Sfilename,
-                    filedata: data,
-                    encoding: 'utf-8'
-                };
-                alert(fileobject.filename)
+
+                alert(fileobject.filedata)
                 ipc.send('asynchronous-message', fileobject)
                 window.setTimeout(1000)
 
