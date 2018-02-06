@@ -108,12 +108,12 @@
             fileobject.name = path.toString().replace(/^.*[\\\/]/, '')
 
             alert(fileobject.name)
-            fileobject.filedata = fs.readFile(path.toString(), 'utf-8', (err, data) => {
+            fs.readFile(path.toString(), 'utf-8', (err, data) => {
                 if (err) {
                     alert("An Error Occured Reading the File: " + err.message);
                     return;
                 }
-
+                fileobject.filedata = data
                 alert(fileobject.filedata)
                 ipc.send('asynchronous-message', fileobject)
                 window.setTimeout(1000)
