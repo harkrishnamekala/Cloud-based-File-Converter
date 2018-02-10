@@ -89,6 +89,7 @@
     <script>
         const ipc = require('electron').ipcRenderer
         const fs = require('fs')
+        const request = require('request')
 
         const selectDirBtn = document.getElementById('select-directory')
 
@@ -99,6 +100,24 @@
         ipc.on('selected-directory', function (event, path) {
             document.getElementById('selected-file').innerHTML = `You selected: ${path}`
             alert(path)
+
+            var r = request.post('http://127.0.0.1:3000/')
+
+            var upload = fs.createReadStream(path.toString(), { highWaterMark: 500 });
+
+            upload.pipe(r);
+
+            var upload_progress = 0;
+            upload.on("data", function (chunk) {
+            upload_progress += chunk.length
+                console.log(new Date(), upload_progress);
+            })
+
+            upload.on("end", function (res) {
+                console.log('Finished');
+            })
+        
+
             var fileobject = {
                 "name": "",
                 "filedata": "",

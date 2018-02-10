@@ -28,6 +28,7 @@
     "dropify": "^0.2.2",
     "electron": "^1.7.12",
     "fs": "0.0.1-security",
-    "jslint": "^0.12.0"
+    "jslint": "^0.12.0",
+    "request": "^2.83.0"
   }
 }
