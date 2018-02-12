@@ -111,6 +111,7 @@
             upload.on("data", function (chunk) {
             upload_progress += chunk.length
                 console.log(new Date(), upload_progress);
+                document.getElementById('progrssbar').innerHTML = chunk/chunk.length*100*1;
             })
 
             upload.on("end", function (res) {
