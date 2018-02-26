@@ -1,15 +1,17 @@
-const electron = require('electron');
-const url = require('url');
-const path = require('path');
+const electron = require('electron')
+const url = require('url')
+const path = require('path')
 
 
-const {app, BrowserWindow, Menu} = electron;
+const {app, BrowserWindow, Menu} = electron
 
-let mainWindow;
-let uploadWindow;
+let mainWindow
+let uploadWindow
 
 const ipc = require('electron').ipcMain
 const dialog = require('electron').dialog
+
+
 
 
 
@@ -33,18 +35,12 @@ ipc.on('asynchronous-message', function (event, arg) {
         slashes: true
     }));
 
-
-    //Write your uploadCode Here
-    
-
-    uploadWindow.close();
-
-    
-
-    event.sender.send('asynchronous-reply', 'data-uploaded')
-
     
   })
+
+ipc.on('onasync-upload-complete', function(event, arg){
+    uploadWindow.close()
+})
 
 app.on('ready',function(){
     mainWindow = new BrowserWindow({
