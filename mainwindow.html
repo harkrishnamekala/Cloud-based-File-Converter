@@ -21,7 +21,6 @@
             text-decoration: none;
         }
     </style>
-    <script src="./script.js"></script>
 
 </head>
 
@@ -47,7 +46,7 @@
                     <p>Drag and drop a file here or click</p>
                     <p class="dropify-error">Sorry, this file is too large</p>
                 </div>
-                <form action="http://localhost/~harry/sampleapp-server/index.php" method="POST" id="fileform" enctype="multipart/form-data">
+                <form method="POST" id="fileform" enctype="multipart/form-data">
                     <input type="button" id="select-directory" name="fileToUpload" class="dropify" data-height="500">
                 </form>
 
@@ -82,20 +81,18 @@
             <a href="./myfiles.html" class="collection-item">My Files</a>
         </div>
     </div>
-    <p id="selected-file"> Some Data Gere</p>
+    <p id="selected-file">File path will be displayed Here</p>
 
 
 
     <script>
         const ipc = require('electron').ipcRenderer
-        const fs = require('fs')
-        const request = require('request')
 
         const selectDirBtn = document.getElementById('select-directory')
 
-        selectDirBtn.addEventListener('click', function (event) {
-            ipc.send('open-file-dialog')
-        })
+            selectDirBtn.addEventListener('click', function (event) {
+                ipc.send('open-file-dialog')
+            })
 
         ipc.on('selected-directory', function (event, path) {
             
@@ -103,33 +100,23 @@
             alert(path)
         
 
-            var fileobject = {
-                "name": "",
-                "filedata": "",
-                "encoding": 'utf-8'
-                };
+        var fileobject = {
+            "name": "",
+            "filepath" : ""
+            };
             
+            fileobject.filepath = path.toString()
             fileobject.name = path.toString().replace(/^.*[\\\/]/, '')
-
-            alert(fileobject.name)
-            fs.readFile(path.toString(), 'utf-8', (err, data) => {
-                if (err) {
-                    alert("An Error Occured Reading the File: " + err.message);
-                    return;
-                }
-                fileobject.filedata = data
-                alert(fileobject.filedata)
-                ipc.send('asynchronous-message', fileobject)
-                window.setTimeout(1000)
-
-            });
-        })
-        ipc.on('asynchronous-reply', function (event, arg) {
+            
+            ipc.send('file-upload-request', fileobject)
+            
+            ipc.on('file-upload-request-reply', function (event, arg) {
             const message = `Asynchronous message reply: ${arg}`
-
-            //document.getElementById('async-reply').innerHTML = message
+            console.log(arg)
+            })
         })
         
+
     </script>
 
 

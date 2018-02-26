@@ -23,10 +23,11 @@ ipc.on('open-file-dialog', function (event) {
   })
 });
 
-ipc.on('asynchronous-message', function (event, arg) {
+ipc.on('file-upload-request', function (event, fileobject) {
+    
     uploadWindow = new BrowserWindow({
-        width: 200,
-        height:200
+        width: 600,
+        height:300
     });
 
     uploadWindow.loadURL(url.format({
@@ -35,6 +36,11 @@ ipc.on('asynchronous-message', function (event, arg) {
         slashes: true
     }));
 
+    ipc.on('sync-file-path-req', function (event, arg) {
+        event.returnValue = fileobject;
+      });
+
+    event.sender.send('file-upload-request-reply', 'received')
     
   })
 
