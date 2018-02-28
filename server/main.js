@@ -2,7 +2,15 @@ var fs = require('fs');
 var express = require('express');
 
 var app = express();
-    app.post('/', function (req, res, next) {
+
+    app.post('/', function(req, res){
+        console.log(req.body)
+        res.send({
+            Msg : "File Name Received Awating File Data"
+        })
+    })
+
+    app.post('/filepost', function (req, res, next) {
         req.pipe(fs.createWriteStream('./uploadFile'));
         req.on('end', next);
     });

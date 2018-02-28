@@ -30,11 +30,11 @@
         <script type="text/javascript" src="dist/js/dropify.min.js" ></script>
     <h1>Uplaoding The Data Please Wait</h1>
     <div class="progress">
-        <div class="determinate"  id="progressbar" style="width: 10%"></div>
+        <div class="determinate"  id="progressbar" style="width: 0%"></div>
     </div>
 
     <script>
-        const Server = 'http://127.0.0.1:3000/'
+        const Server = 'http://127.0.0.1:3000/filepost'
         const ipc = require('electron').ipcRenderer
         const fs = require('fs')
         const request = require('request')
@@ -48,6 +48,12 @@
 
         alert(fileobject.name)
         alert(fileobject.filepath)
+
+        filename = request.post("http://127.0.0.1:3000/",form: {filename: fiel},function(error, response, body){
+            console.log(error)
+            console.log(response.statusCode)
+            console.log(body)
+        })
        
        
         var r = request.post(Server)
@@ -57,17 +63,26 @@
             upload.pipe(r);
 
         var upload_progress = 0;
-            
-        
+        var upload_number = 0;    
+        var filesize = fs.statSync(fileobject.filepath.toString())
+        var updatefreq = 0;
             upload.on("data", function (chunk) {
             upload_progress += chunk.length
-                console.log(new Date(), upload_progress);
-                console.log("Upload Progrss Percent  " + chunk/chunk.length*100*1);
-                document.getElementById('progressbar').style.width = chunk/chunk.length*100*1 + "%";
+            
+                console.log(new Date(), upload_progress)
+                if(updatefreq == 100){
+                document.getElementById('progressbar').style.width = upload_progress/filesize.size*100 + "%";
+                var updateprogress = upload_progress/filesize.size*100-100
+                updateprogress = upload_progress/filesize.size*100 + updateprogress
+                console.log("Upload in Percent : ", updateprogress)
+                updatefreq=0
+                }
+                updatefreq++;
             })
 
             upload.on("end", function (res) {
                 console.log('Finished');
+                console.log(filesize.size)
             })
     </script>
 </body>
