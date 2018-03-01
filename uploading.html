@@ -49,7 +49,7 @@
         alert(fileobject.name)
         alert(fileobject.filepath)
 
-        filename = request.post("http://127.0.0.1:3000/",form: {filename: fiel},function(error, response, body){
+        filename = request.post("http://127.0.0.1:3000/filename",{form: {filename: fileobject.name}},function(error, response, body){
             console.log(error)
             console.log(response.statusCode)
             console.log(body)
