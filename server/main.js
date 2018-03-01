@@ -8,17 +8,29 @@ var app = express();
         extended: true }
     ))
 
+let Rfilename
 
     app.post('/filename', function(req, res){
         console.log(req.body)
+        Rfilename = req.body.filename
         res.send({
             Msg : "File Name Received Awating File Data",
             Data : req.body
         })
     })
 
+    app.post('/createuser', function(req, res){
+        console.log(req.body)
+        var username = req.body.usernamec
+        var password = req.body.passwordc
+        res.send({
+            Msg : "User Created",
+            Data : req.body
+        })
+    })
+
     app.post('/filepost', function (req, res, next) {
-        req.pipe(fs.createWriteStream('./uploadFile'));
+        req.pipe(fs.createWriteStream('./'+ Rfilename));
         req.on('end', next);
     })
 

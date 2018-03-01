@@ -34,7 +34,7 @@
     </div>
 
     <script>
-        const Server = 'http://127.0.0.1:3000/filepost'
+        const Server = 'http://127.0.0.1:3000'
         const ipc = require('electron').ipcRenderer
         const fs = require('fs')
         const request = require('request')
@@ -49,18 +49,18 @@
         alert(fileobject.name)
         alert(fileobject.filepath)
 
-        filename = request.post("http://127.0.0.1:3000/filename",{form: {filename: fileobject.name}},function(error, response, body){
+        filename = request.post(Server + "/filename",{form: {filename: fileobject.name}},function(error, response, body){
             console.log(error)
             console.log(response.statusCode)
             console.log(body)
         })
        
        
-        var r = request.post(Server)
+        var r = request.post(Server + "/filepost")
 
-        var upload = fs.createReadStream(fileobject.filepath.toString(), { highWaterMark: 500 });
+        var upload = fs.createReadStream(fileobject.filepath.toString(), { highWaterMark: 500 })
             
-            upload.pipe(r);
+            upload.pipe(r)
 
         var upload_progress = 0;
         var upload_number = 0;    
@@ -71,18 +71,25 @@
             
                 console.log(new Date(), upload_progress)
                 if(updatefreq == 100){
-                document.getElementById('progressbar').style.width = upload_progress/filesize.size*100 + "%";
+                document.getElementById('progressbar').style.width = upload_progress/filesize.size*100 + "%"
                 var updateprogress = upload_progress/filesize.size*100-100
                 updateprogress = upload_progress/filesize.size*100 + updateprogress
                 console.log("Upload in Percent : ", updateprogress)
                 updatefreq=0
                 }
-                updatefreq++;
+                updatefreq++
             })
 
             upload.on("end", function (res) {
                 console.log('Finished');
                 console.log(filesize.size)
+                document.getElementById('progressbar').style.width  = "100%"
+                ipc.send('open-information-dialog')
+            })
+
+
+            ipc.on('information-dialog-selection', function (event, index) {
+                ipc.send('file-upload-complete', fileobject.filename)
             })
     </script>
 </body>

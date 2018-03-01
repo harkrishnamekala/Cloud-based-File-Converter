@@ -1,15 +1,19 @@
 const electron = require('electron')
 const url = require('url')
 const path = require('path')
+const fs = require('fs')
+const request = require('request')
 
 
 const {app, BrowserWindow, Menu} = electron
 
 let mainWindow
 let uploadWindow
+let userWindow
 
 const ipc = require('electron').ipcMain
 const dialog = require('electron').dialog
+const Server = "http://127.0.0.1:3000"
 
 
 
@@ -44,21 +48,85 @@ ipc.on('file-upload-request', function (event, fileobject) {
     
   })
 
-ipc.on('onasync-upload-complete', function(event, arg){
+  ipc.on('open-information-dialog', function (event) {
+    const options = {
+      type: 'info',
+      title: 'Information',
+      message: "File Upload Complete",
+      buttons: ['Ok']
+    }
+    dialog.showMessageBox(options, function (index) {
+      event.sender.send('information-dialog-selection', index)
+    })
+  })
+
+ipc.on('file-upload-complete', function(event, arg){
     uploadWindow.close()
 })
 
 app.on('ready',function(){
-    mainWindow = new BrowserWindow({
-        width: 1100,
-        height:670
-    });
 
-    mainWindow.loadURL(url.format({
-        pathname: path.join(__dirname,'mainwindow.html'),
-        protocol: 'file:',
-        slashes: true
-    }));
+    function checkcredentials(credentials){
+        check = request.post(Server + "/checkuser", { form: credentials }, function(error, response, responsebodycheck){
+            if(responsebodycheck.)
+        })
+    }
+
+    function startmainWindows(){
+        mainWindow = new BrowserWindow({
+            width: 1100,
+            height:670
+        });
+    
+        mainWindow.loadURL(url.format({
+            pathname: path.join(__dirname,'mainwindow.html'),
+            protocol: 'file:',
+            slashes: true
+        }));
+    }
+
+    function createnewuser(username, password){
+        userWindow = new BrowserWindow({
+            width: 300,
+            height: 300
+        })
+    
+        userWindow.loadURL(url.format({
+            pathname: path.join(__dirname,'userdetails.html'),
+            protocol: 'file',
+            slashes: true
+        }))
+
+        localcredentials = request.post(Server + "/createuser", {form: { usernamec : username,
+                                                                          passwordc : password}},function(error, response,responsebody){
+                                                                            console.log(error)
+                                                                            console.log(response.statusCode)
+
+                                                                          })
+                                                                          
+
+        var fs = require('fs');
+
+        if (!fs.existsSync(app.getPath() + "/CBFSAC")){
+        fs.mkdirSync(app.getPath() + "CBFSAC");
+        }
+
+
+
+    }
+
+    var configfile = app.getPath("home") + "/CBFSAC/credentials.json"
+    if(fs.existsSync(configfile)){
+        var rawdata = fs.readFileSync(configfile)
+        var credentials = JSON.parse(rawdata)
+        if(checkcredentials(credentials)){
+            startmainWindows();
+        }
+    }
+    else{
+        
+    }
+    
 
 
 //Quit App when Closed
