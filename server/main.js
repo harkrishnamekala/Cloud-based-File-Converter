@@ -29,6 +29,12 @@ let Rfilename
         })
     })
 
+    app.post('/checkuser', function(req, res){
+        var hash = req.body.hash
+        //Verification Code
+        //send Response
+    })
+
     app.post('/filepost', function (req, res, next) {
         req.pipe(fs.createWriteStream('./'+ Rfilename));
         req.on('end', next);

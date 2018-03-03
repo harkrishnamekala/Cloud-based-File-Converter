@@ -63,27 +63,8 @@ ipc.on('file-upload-request', function (event, fileobject) {
 ipc.on('file-upload-complete', function(event, arg){
     uploadWindow.close()
 })
-
+// Application is starting here ####################################################
 app.on('ready',function(){
-
-    function checkcredentials(credentials){
-        check = request.post(Server + "/checkuser", { form: credentials }, function(error, response, responsebodycheck){
-            if(responsebodycheck.)
-        })
-    }
-
-    function startmainWindows(){
-        mainWindow = new BrowserWindow({
-            width: 1100,
-            height:670
-        });
-    
-        mainWindow.loadURL(url.format({
-            pathname: path.join(__dirname,'mainwindow.html'),
-            protocol: 'file:',
-            slashes: true
-        }));
-    }
 
     function createnewuser(username, password){
         userWindow = new BrowserWindow({
@@ -103,42 +84,72 @@ app.on('ready',function(){
                                                                             console.log(response.statusCode)
 
                                                                           })
-                                                                          
 
-        var fs = require('fs');
-
+        var cred = { localUsername: username,
+                        localPassword: password}
         if (!fs.existsSync(app.getPath() + "/CBFSAC")){
         fs.mkdirSync(app.getPath() + "CBFSAC");
         }
-
-
+        //Create File Here
+        fs.writeFileSync(app.getPath() + "/CBFSAC/credentials.json", cred.toString());
+        startmainWindows()
+        userWindow.close()
 
     }
 
+    function fetechcredentails(){
     var configfile = app.getPath("home") + "/CBFSAC/credentials.json"
     if(fs.existsSync(configfile)){
         var rawdata = fs.readFileSync(configfile)
         var credentials = JSON.parse(rawdata)
-        if(checkcredentials(credentials)){
-            startmainWindows();
-        }
+        return credentials
     }
-    else{
         
+    return "userNotFound"
+
     }
+
+    function checkcredentialsonserver(credentials){
+        check = request.post(Server + "/checkuser", { form: credentials }, function(error, response, responsebodycheck){
+            if(responsebodycheck.Auth){
+                return "userExits";
+            }
+            else {
+                createnewuser(credentials.localUsername, credentials.localPassword);
+                return "userCreated";
+            }
+        })
+    }
+
+    function startmainWindows(){
+        mainWindow = new BrowserWindow({
+            width: 1100,
+            height:670
+        })
     
+        mainWindow.loadURL(url.format({
+            pathname: path.join(__dirname,'mainwindow.html'),
+            protocol: 'file:',
+            slashes: true
+        }));
 
+        //Quit App when Closed
 
-//Quit App when Closed
-
-mainWindow.on('closed', function(){
-    app.quit();
-});
+        mainWindow.on('closed', function(){
+            app.quit();
+        });
+    }
     //Build Menu from Template
     const mainMenu = Menu.buildFromTemplate(mainMenuTemplate);
     
     //Insert The Menu
     Menu.setApplicationMenu(mainMenu);
+
+    localUserCred = fetechcredentails()
+
+    if(localUserCred !== "userNotFound"){
+        checkcredentialsonserver(localcredentials)
+    }
 });
 
 
