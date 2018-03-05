@@ -30,7 +30,8 @@
     "fs": "0.0.1-security",
     "jshint": "^2.9.5",
     "jslint": "^0.12.0",
-    "request": "^2.83.0"
+    "request": "^2.83.0",
+    "sha256": "^0.2.0"
   },
   "devDependencies": {
     "eslint": "^4.18.1",

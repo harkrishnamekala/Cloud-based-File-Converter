@@ -3,6 +3,7 @@ const url = require('url')
 const path = require('path')
 const fs = require('fs')
 const request = require('request')
+const sha256 = require('sha256')
 
 
 const {app, BrowserWindow, Menu} = electron
@@ -66,6 +67,37 @@ ipc.on('file-upload-complete', function(event, arg){
 // Application is starting here ####################################################
 app.on('ready',function(){
 
+    var loginStatus = false
+
+    function changeLoginstatus(dec){
+        loginStatus = dec
+    }
+
+
+  ipc.on('login-cred-ask', function (event,arg){
+    var username = arg.lusername, password = arg.lpassword
+    
+    localcredentials = request.post(Server + "/createuser", {form: { usernamec : username,
+        passwordc : password}},function(error, response,responsebody){
+          console.log(error)
+          console.log(response.statusCode)
+          console.log(responsebody.toString())
+        })
+
+    var cred = { localUsername: username,
+    localPassword: password }
+
+    if (!fs.existsSync(app.getPath("home") + "/CBFSAC")){
+        fs.mkdirSync(app.getPath("home") + "/CBFSAC");
+    }
+//Create File Here
+    fs.writeFileSync(app.getPath("home") + "/CBFSAC/credentials.json", JSON.stringify(cred));
+    startmainWindows()
+    userWindow.close()
+
+    event.returnValue = "Received"
+  })
+
     function createnewuserwindow(){
         userWindow = new BrowserWindow({
             width: 400,
@@ -77,23 +109,6 @@ app.on('ready',function(){
             protocol: 'file',
             slashes: true
         }))
-
-        localcredentials = request.post(Server + "/createuser", {form: { usernamec : username,
-                                                                          passwordc : password}},function(error, response,responsebody){
-                                                                            console.log(error)
-                                                                            console.log(response.statusCode)
-
-                                                                          })
-
-        var cred = { localUsername: username,
-                        localPassword: password}
-        if (!fs.existsSync(app.getPath() + "/CBFSAC")){
-        fs.mkdirSync(app.getPath() + "CBFSAC");
-        }
-        //Create File Here
-        fs.writeFileSync(app.getPath() + "/CBFSAC/credentials.json", cred.toString());
-        startmainWindows()
-        userWindow.close()
 
     }
 
@@ -110,13 +125,18 @@ app.on('ready',function(){
     }
 
     function checkcredentialsonserver(credentials){
-        check = request.post(Server + "/checkuser", { form: credentials }, function(error, response, responsebodycheck){
-            if(responsebodycheck.Auth){
-                return "userExits";
+        check = request.post(Server + "/checkuser", { form:  { hash: sha256(JSON.stringify(credentials))}}, function(error, response, responsebodycheck){
+            console.log(responsebodycheck.Auth)
+            var responsedata = JSON.parse(responsebodycheck)
+            if(responsedata.Auth){
+                changeLoginstatus(true)
+                console.log("passed up to Auth Success")
+                
             }
             else {
-                createnewuser(credentials.localUsername, credentials.localPassword);
-                return "userCreated";
+                createnewuserwindow();
+                console.log("Passed Into create new user")
+                changeLoginstatus(true)
             }
         })
     }
@@ -146,9 +166,15 @@ app.on('ready',function(){
     Menu.setApplicationMenu(mainMenu);
 
     localUserCred = fetechcredentails()
-
+    console.log(localUserCred)
     if(localUserCred !== "userNotFound"){
-        checkcredentialsonserver(localcredentials)
+        if(loginStatus){
+            startmainWindows()
+        }
+        else{
+            console.log("Failed Auth")
+            console.log(loginStatus)
+        }
     }
     else{
         createnewuserwindow()
