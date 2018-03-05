@@ -164,6 +164,8 @@ app.on('ready',function(){
     localUserCred = fetechcredentails()
     console.log(localUserCred)
     if(localUserCred !== "userNotFound"){
+        var data = checkcredentialsonserver(localUserCred)
+        console.log(data, "Is Returned")
         if(checkcredentialsonserver(localUserCred)){
             startmainWindows()
         }
