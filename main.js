@@ -67,12 +67,6 @@ ipc.on('file-upload-complete', function(event, arg){
 // Application is starting here ####################################################
 app.on('ready',function(){
 
-    var loginStatus = false
-
-    function changeLoginstatus(dec){
-        loginStatus = dec
-    }
-
 
   ipc.on('login-cred-ask', function (event,arg){
     var username = arg.lusername, password = arg.lpassword
@@ -125,20 +119,22 @@ app.on('ready',function(){
     }
 
     function checkcredentialsonserver(credentials){
+        var localLoginStatus = false
         check = request.post(Server + "/checkuser", { form:  { hash: sha256(JSON.stringify(credentials))}}, function(error, response, responsebodycheck){
             console.log(responsebodycheck.Auth)
             var responsedata = JSON.parse(responsebodycheck)
             if(responsedata.Auth){
-                changeLoginstatus(true)
+                localLoginStatus = true
                 console.log("passed up to Auth Success")
                 
             }
             else {
                 createnewuserwindow();
                 console.log("Passed Into create new user")
-                changeLoginstatus(true)
+                localLoginStatus = true
             }
         })
+        return localLoginStatus
     }
 
     function startmainWindows(){
@@ -168,12 +164,11 @@ app.on('ready',function(){
     localUserCred = fetechcredentails()
     console.log(localUserCred)
     if(localUserCred !== "userNotFound"){
-        if(loginStatus){
+        if(checkcredentialsonserver(localUserCred)){
             startmainWindows()
         }
         else{
             console.log("Failed Auth")
-            console.log(loginStatus)
         }
     }
     else{
