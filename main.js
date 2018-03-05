@@ -124,14 +124,12 @@ app.on('ready',function(){
             console.log(responsebodycheck.Auth)
             var responsedata = JSON.parse(responsebodycheck)
             if(responsedata.Auth){
-                localLoginStatus = true
                 console.log("passed up to Auth Success")
-                
+                startmainWindows()
             }
             else {
-                createnewuserwindow();
                 console.log("Passed Into create new user")
-                localLoginStatus = true
+                createnewuserwindow()
             }
         })
         return localLoginStatus
@@ -164,14 +162,7 @@ app.on('ready',function(){
     localUserCred = fetechcredentails()
     console.log(localUserCred)
     if(localUserCred !== "userNotFound"){
-        var data = checkcredentialsonserver(localUserCred)
-        console.log(data, "Is Returned")
-        if(checkcredentialsonserver(localUserCred)){
-            startmainWindows()
-        }
-        else{
-            console.log("Failed Auth")
-        }
+        checkcredentialsonserver(localUserCred)
     }
     else{
         createnewuserwindow()
