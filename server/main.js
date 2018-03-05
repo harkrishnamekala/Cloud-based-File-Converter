@@ -10,10 +10,12 @@ var app = express();
     ))
 
 let Rfilename
+let Rhash
 
     app.post('/filename', function(req, res){
         console.log(req.body)
         Rfilename = req.body.filename
+        Rhash = req.body.Hash
         res.send({
             Msg : "File Name Received Awating File Data",
             Data : req.body
@@ -56,8 +58,15 @@ let Rfilename
     })
 
     app.post('/filepost', function (req, res, next) {
-        req.pipe(fs.createWriteStream('./'+ Rfilename));
+        req.pipe(fs.createWriteStream(__dirname + "/users/" + Rhash + "/" + Rfilename));
         req.on('end', next);
+    })
+
+    app.post('/myfiles', function(req,res){
+        var Hash = req.body.hash
+        if(fs.existsSync(__dirname + "/users/" + Hash.toString())){
+
+        }
     })
 
     app.listen(3000)

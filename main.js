@@ -19,7 +19,6 @@ const Server = "http://127.0.0.1:3000"
 
 
 
-
 ipc.on('open-file-dialog', function (event) {
   dialog.showOpenDialog({
     properties: ['openFile']
@@ -66,6 +65,18 @@ ipc.on('file-upload-complete', function(event, arg){
 })
 // Application is starting here ####################################################
 app.on('ready',function(){
+
+    
+
+    function getHash(){
+        var rawData = fs.readFileSync(app.getPath("home") + "/CBFSAC/credentials.json")
+        var jsonData = JSON.parse(rawData)
+        return sha256(JSON.stringify(jsonData))
+    }
+
+    ipc.on('send-home-dir-hash', function(event){
+        event.returnValue = getHash()
+    })
 
 
   ipc.on('login-cred-ask', function (event,arg){

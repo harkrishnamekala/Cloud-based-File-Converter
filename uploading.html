@@ -38,6 +38,9 @@
         const ipc = require('electron').ipcRenderer
         const fs = require('fs')
         const request = require('request')
+        
+
+
 
         var fileobjectex = {
             name : "",
@@ -48,8 +51,8 @@
 
         alert(fileobject.name)
         alert(fileobject.filepath)
-
-        filename = request.post(Server + "/filename",{form: {filename: fileobject.name}},function(error, response, body){
+        var userHash = ipc.sendSync('send-home-dir-hash','Hash')
+        filename = request.post(Server + "/filename",{form: {filename: fileobject.name, Hash: userHash}},function(error, response, body){
             console.log(error)
             console.log(response.statusCode)
             console.log(body)
