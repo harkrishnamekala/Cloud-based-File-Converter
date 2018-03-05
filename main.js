@@ -66,10 +66,10 @@ ipc.on('file-upload-complete', function(event, arg){
 // Application is starting here ####################################################
 app.on('ready',function(){
 
-    function createnewuser(username, password){
+    function createnewuserwindow(){
         userWindow = new BrowserWindow({
-            width: 300,
-            height: 300
+            width: 400,
+            height: 900
         })
     
         userWindow.loadURL(url.format({
@@ -149,6 +149,9 @@ app.on('ready',function(){
 
     if(localUserCred !== "userNotFound"){
         checkcredentialsonserver(localcredentials)
+    }
+    else{
+        createnewuserwindow()
     }
 });
 
