@@ -24,5 +24,27 @@
           </ul>
     </div>
   </nav>
+
+  <div class="collection">
+        <a href="#!" class="collection-item">Alvin</a>
+        <a href="#!" class="collection-item">Alvin</a>
+        <a href="#!" class="collection-item">Alvin</a>
+        <a href="#!" class="collection-item">Alvin</a>
+    </div>
+
+  <script>
+    const Server = 'http://127.0.0.1:3000'
+    const ipc = require('electron').ipcRenderer
+    const fs = require('fs')
+    const request = require('request')
+
+    var userHash = ipc.sendSync('send-home-dir-hash','Hash')
+
+    alert(userHash)
+    request.post(Server + "/myfiles", {form: { hash: userHash}}, function(err, response, responsebody){
+        alert(responsebody)
+    })
+
+  </script>
 </body>
 </html>

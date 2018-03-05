@@ -64,8 +64,24 @@ let Rhash
 
     app.post('/myfiles', function(req,res){
         var Hash = req.body.hash
-        if(fs.existsSync(__dirname + "/users/" + Hash.toString())){
-
+        var dirPath = __dirname + "/users/" + Hash.toString()
+        if(fs.existsSync(dirPath)){
+            var fileobjects = []
+            fs.readdirSync(dirPath, function(err, items){
+                for(var i=0;i<items.length;i++){
+                    var fileSize = fs.statSync(dirPath + "/" + items[i])
+                    fileobjects[i] = {
+                        filename: items[i],
+                        filesize: fileSize
+                    }
+                    console.log(items[i])
+                    console.log(fileSize)
+                }
+            })
+            res.send({Files : fileobjects})
+        }
+        else{
+            res.send({Msg: "404 File Not Found heHe"})
         }
     })
 
