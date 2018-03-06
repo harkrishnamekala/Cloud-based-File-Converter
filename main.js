@@ -12,11 +12,35 @@ let mainWindow
 let uploadWindow
 let userWindow
 
+var filePathOnServer
+
 const ipc = require('electron').ipcMain
 const dialog = require('electron').dialog
 const Server = "http://127.0.0.1:3000"
 
+function setFilePath(serverFilePath){
+    filePathOnServer = serverFilePath
+}
 
+
+ipc.on('filepath-request-by-file', function(event){
+    event.returnValue = filePathOnServer
+})
+
+ipc.on('file-conversion-event', function(event,filepath){
+    fileWindow = new BrowserWindow({
+        width:800,
+        height:800
+    })
+
+    fileWindow.loadURL(url.format({
+        pathname: path.join(__dirname, 'file.html'),
+        protocol:'file',
+        slashes:ture
+    }))
+    setFilePath(filepath)
+
+})
 
 
 ipc.on('open-file-dialog', function (event) {

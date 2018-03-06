@@ -25,7 +25,7 @@
     </div>
   </nav>
 
-  <div class="collection">
+  <div class="collection" id="filesList">
         <a href="#!" class="collection-item">Alvin</a>
         <a href="#!" class="collection-item">Alvin</a>
         <a href="#!" class="collection-item">Alvin</a>
@@ -40,10 +40,19 @@
 
     var userHash = ipc.sendSync('send-home-dir-hash','Hash')
 
-    alert(userHash)
     request.post(Server + "/myfiles", {form: { hash: userHash}}, function(err, response, responsebody){
-        alert(responsebody)
+        var fileData = JSON.parse(responsebody)
+        for(var i=0;i<fileData.Files.length;i++){
+          var divisonData = document.getElementById('filesList')
+          var attrBute = document.createElement('a')
+          attrBute.setAttribute('class','collection-item')
+          attrBute.innerHTML = "Name: " + fileData.Files[i].fileName + " |--------------------| Size: " + fileData.Files[i].fileSize.toFixed(2) + " MB"
+          attrBute.setAttribute('href','#')
+          divisonData.appendChild(attrBute)
+        }
     })
+
+
 
   </script>
 </body>

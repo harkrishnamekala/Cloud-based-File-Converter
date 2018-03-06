@@ -67,17 +67,12 @@ let Rhash
         var dirPath = __dirname + "/users/" + Hash.toString()
         if(fs.existsSync(dirPath)){
             var fileobjects = []
-            fs.readdirSync(dirPath, function(err, items){
-                for(var i=0;i<items.length;i++){
-                    var fileSize = fs.statSync(dirPath + "/" + items[i])
-                    fileobjects[i] = {
-                        filename: items[i],
-                        filesize: fileSize
-                    }
-                    console.log(items[i])
-                    console.log(fileSize)
-                }
-            })
+            var filesArray = fs.readdirSync(dirPath)
+            for(var i=0 ; i< filesArray.length;i++){
+                var localFileSize = fs.statSync(dirPath + "/" + filesArray[i])
+                fileobjects[i] = { fileName: filesArray[i],
+                                    fileSize: localFileSize['size']/1000000}
+            }
             res.send({Files : fileobjects})
         }
         else{
