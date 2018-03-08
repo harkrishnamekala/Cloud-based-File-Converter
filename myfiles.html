@@ -26,10 +26,6 @@
   </nav>
 
   <div class="collection" id="filesList">
-        <a href="#!" class="collection-item">Alvin</a>
-        <a href="#!" class="collection-item">Alvin</a>
-        <a href="#!" class="collection-item">Alvin</a>
-        <a href="#!" class="collection-item">Alvin</a>
     </div>
 
   <script>
@@ -48,9 +44,16 @@
           attrBute.setAttribute('class','collection-item')
           attrBute.innerHTML = "Name: " + fileData.Files[i].fileName + " |--------------------| Size: " + fileData.Files[i].fileSize.toFixed(2) + " MB"
           attrBute.setAttribute('href','#')
+          attrBute.setAttribute('id',fileData.Files[i].fileName)
+          attrBute.setAttribute('onclick','openFileWindow(this.id)')
           divisonData.appendChild(attrBute)
         }
     })
+
+    function openFileWindow(fileName){
+        alert(fileName)
+        ipc.sendSync('file-conversion-event', fileName)
+    }
 
 
 

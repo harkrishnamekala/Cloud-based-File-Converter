@@ -22,6 +22,59 @@
     </div>
   </nav>
 
+  <div style="margin:50px">
+
+  </div>
+
+  <div class="col s12 m7">
+      <h2 class="header" id="fileInformationLocal"></h2>
+      <div class="card horizontal">
+        <div class="card-image">
+          <img src="icofile.png">
+        </div>
+        <div class="card-stacked">
+          <div class="card-content">
+            <p id="fileInformationLocal"> </p>
+          </div>
+          <div class="card-action">
+            <a href="#" onclick="moreFileInformation()">MoreInfo</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+
+
+  <script>
+    const Server = 'http://127.0.0.1:3000'
+    const ipc = require('electron').ipcRenderer
+    const fs = require('fs')
+    const request = require('request')
+
+    var userHash = ipc.sendSync('send-home-dir-hash','Hash')
+    var fileName = ipc.sendSync('get-file-name-path-for-conv')
+    alert(fileName)
+    var pattern = /\.([0-9a-z]+)(?:[\?#]|$)/i
+
+    var extensionArray = (fileName).match(pattern)
+
+    localFileType = extensionArray[1]
+
+    request.post(Server + '/createaconversionrequest',{ form: { fileType: localFileType}} ,function(error, response, responsebody){
+      alert(responsebody)
+    })
+
+    document.getElementById('fileInformationLocal').innerHTML = fileName.toString()
+
+
+
+    function moreFileInformation(){
+      request.post(Server + "/getfileinformation", { form: { Hash: userHash, nameFile: fileName}}, function(error, response, responsebody){
+      alert(responsebody)
+    })
+    }
+  
+  </script>
   
 </body>
 </html>

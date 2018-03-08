@@ -2,6 +2,8 @@ var fs = require('fs');
 var express = require('express');
 var bodyParser = require('body-parser')
 var sha256 = require('sha256')
+var request = require('request')
+const apiKey = '3cf0bc8500147ae3689fa97bf6197dfca0374fdc'
 
 var app = express();
     app.use(bodyParser.json())
@@ -47,6 +49,17 @@ let Rhash
         })
     })
 
+    app.post('/getfileinformation', function(req,res){
+        var Hash = req.body.Hash
+        var fileName = req.body.nameFile
+        var pathToFile = __dirname + "/users/" + Hash + "/" + fileName
+        if(fs.existsSync(pathToFile)){
+            var Information = fs.statSync(pathToFile)
+            res.send({ fileInformation: Information})
+        }
+        return res.send({Msg : "File Not Found"})
+    })
+
     app.post('/checkuser', function(req, res){
         var Hash = req.body.hash
         console.log(req.body.hash)
@@ -78,6 +91,22 @@ let Rhash
         else{
             res.send({Msg: "404 File Not Found heHe"})
         }
+    })
+
+
+    app.post('/createaconversionrequest',function(req,res){
+        var fileType = req.body.fileType
+
+        request.get('https://sandbox.zamzar.com/v1/formats/'+fileType, function (err, response, body) {
+            if (err) {
+                console.log('Unable to get formats', err);
+            } else {
+                console.log('SUCCESS! Supported Formats:', JSON.parse(body));
+                res.send(body)
+            }
+    }).auth(apiKey, '', true)
+
+    res.send({Msg: 'Failed'})
     })
 
     app.listen(3000)

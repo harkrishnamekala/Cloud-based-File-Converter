@@ -12,7 +12,6 @@ let mainWindow
 let uploadWindow
 let userWindow
 
-var filePathOnServer
 
 const ipc = require('electron').ipcMain
 const dialog = require('electron').dialog
@@ -23,11 +22,8 @@ function setFilePath(serverFilePath){
 }
 
 
-ipc.on('filepath-request-by-file', function(event){
-    event.returnValue = filePathOnServer
-})
 
-ipc.on('file-conversion-event', function(event,filepath){
+ipc.on('file-conversion-event', function(event,fileName){
     fileWindow = new BrowserWindow({
         width:800,
         height:800
@@ -36,9 +32,14 @@ ipc.on('file-conversion-event', function(event,filepath){
     fileWindow.loadURL(url.format({
         pathname: path.join(__dirname, 'file.html'),
         protocol:'file',
-        slashes:ture
+        slashes:true
     }))
-    setFilePath(filepath)
+
+
+    ipc.on('get-file-name-path-for-conv', function(event, msg){
+        event.returnValue = fileName
+        console.log(fileName)
+    })
 
 })
 
