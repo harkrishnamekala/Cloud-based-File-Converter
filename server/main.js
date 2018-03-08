@@ -3,7 +3,7 @@ var express = require('express');
 var bodyParser = require('body-parser')
 var sha256 = require('sha256')
 var request = require('request')
-const apiKey = '3cf0bc8500147ae3689fa97bf6197dfca0374fdc'
+var apiKey = '3cf0bc8500147ae3689fa97bf6197dfca0374fdc'
 
 var app = express();
     app.use(bodyParser.json())
@@ -95,18 +95,20 @@ let Rhash
 
 
     app.post('/createaconversionrequest',function(req,res){
-        var fileType = req.body.fileType
+        var lfileType = req.body.fileType
+        console.log(lfileType)
 
-        request.get('https://sandbox.zamzar.com/v1/formats/'+fileType, function (err, response, body) {
+        request.get('https://sandbox.zamzar.com/v1/formats/' + lfileType.toString(), function (err, response, body) {
             if (err) {
-                console.log('Unable to get formats', err);
+                console.log('Unable to get formats', err)
+                res.send(err)
             } else {
-                console.log('SUCCESS! Supported Formats:', JSON.parse(body));
+                console.log('SUCCESS! Supported Formats:', JSON.parse(body))
                 res.send(body)
             }
-    }).auth(apiKey, '', true)
+        }).auth(apiKey, '', true);
 
-    res.send({Msg: 'Failed'})
+
     })
 
     app.listen(3000)

@@ -34,13 +34,17 @@
         </div>
         <div class="card-stacked">
           <div class="card-content">
-            <p id="fileInformationLocal"> </p>
+            <p id="fileInformationLocal"> <a class="waves-effect waves-light btn-large" onclick="startconversion()">Convert</a></p>
           </div>
           <div class="card-action">
             <a href="#" onclick="moreFileInformation()">MoreInfo</a>
           </div>
         </div>
       </div>
+    </div>
+
+    <div class="collection" id="namesList">
+      
     </div>
   
 
@@ -50,6 +54,8 @@
     const ipc = require('electron').ipcRenderer
     const fs = require('fs')
     const request = require('request')
+
+    var selectedExt = ""
 
     var userHash = ipc.sendSync('send-home-dir-hash','Hash')
     var fileName = ipc.sendSync('get-file-name-path-for-conv')
@@ -61,17 +67,41 @@
     localFileType = extensionArray[1]
 
     request.post(Server + '/createaconversionrequest',{ form: { fileType: localFileType}} ,function(error, response, responsebody){
-      alert(responsebody)
+        alert(responsebody)
+        var responsebodypar = JSON.parse(responsebody)
+        alert(responsebodypar.targets.length)
+        for(var i=0; i<responsebodypar.targets.length;i++){
+          console.log(responsebodypar.targets[i].name)
+          var divisonData = document.getElementById('namesList')
+          var attrBute = document.createElement('a')
+          attrBute.setAttribute('class','collection-item')
+          attrBute.innerHTML = "Name: " + responsebodypar.targets[i].name
+          attrBute.setAttribute('href','#')
+          attrBute.setAttribute('id',responsebodypar.targets[i].name)
+          attrBute.setAttribute('onclick','selectExtension(this.id)')
+          divisonData.appendChild(attrBute)
+        }
     })
 
     document.getElementById('fileInformationLocal').innerHTML = fileName.toString()
 
+    function selectExtension(extensionName){
+        selectedExt = extensionName
+    }
 
 
     function moreFileInformation(){
       request.post(Server + "/getfileinformation", { form: { Hash: userHash, nameFile: fileName}}, function(error, response, responsebody){
       alert(responsebody)
     })
+    }
+
+    function startconversion(){
+        if(selectedExt === ""){
+            alert("Please Select a File Type")
+        } else {
+            alert("File Conversion Started")
+        }
     }
   
   </script>
