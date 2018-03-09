@@ -111,4 +111,27 @@ let Rhash
 
     })
 
+    app.post('/startconversionjob', function(req,res){
+        var userHash = req.body.suserHash,
+        fileName = req.body.sfileName,
+        targetFile = req.body.stargetFile, 
+        pathToFile = __dirname + "/users/" + userHash + "/" + fileName,
+        formData = {
+            target_format: targetFile,
+            source_file: fs.createReadStream(pathToFile)
+        };
+
+        request.post({url:'https://sandbox.zamzar.com/v1/jobs/', formData: formData}, function (err, response, body) {
+            if (err) {
+                console.error('Unable to start conversion job', err);
+                res.send(err)
+            } else {
+                console.log('SUCCESS! Conversion job started:', JSON.parse(body));
+                res.send(body)
+            }
+        }).auth(apiKey, '', true);
+
+        
+    })
+
     app.listen(3000)
