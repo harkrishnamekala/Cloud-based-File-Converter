@@ -21,7 +21,14 @@ function setFilePath(serverFilePath){
     filePathOnServer = serverFilePath
 }
 
-
+ipc.on('save-dialog', function (event) {
+    const options = {
+      title: 'Save the Data'
+    }
+    dialog.showSaveDialog(options, function (filename) {
+      event.sender.send('saved-file', filename)
+    })
+  })
 
 ipc.on('file-conversion-event', function(event,fileName){
     fileWindow = new BrowserWindow({

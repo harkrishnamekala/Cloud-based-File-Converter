@@ -97,10 +97,17 @@
     }
 
     function startconversion(){
+        alert("Started Conversion")
         if(selectedExt === ""){
             alert("Please Select a File Type")
         } else {
-            alert("File Conversion Started")
+            request.post(Server + "/startconversionjob", {form: { suserHash: userHash, sfileName: fileName, stargetFile: selectedExt}}, function(error, response,responsebody){
+                var reponsedata = JSON.parse(responsebody)
+                if(reponsedata.Msg == "Successful"){
+                  alert("File Conversion Completed Please download the file from the Downloads Tab")
+                  console.log(error)
+                }
+            })
         }
     }
   

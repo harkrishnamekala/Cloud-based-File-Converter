@@ -39,6 +39,7 @@
     request.post(Server + "/myfiles", {form: { hash: userHash}}, function(err, response, responsebody){
         var fileData = JSON.parse(responsebody)
         for(var i=0;i<fileData.Files.length;i++){
+          if(fileData.Files[i].fileName === "downloads") continue
           var divisonData = document.getElementById('filesList')
           var attrBute = document.createElement('a')
           attrBute.setAttribute('class','collection-item')

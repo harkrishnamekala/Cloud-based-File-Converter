@@ -25,5 +25,46 @@
           </ul>
     </div>
   </nav>
+  <div class="collection" id="filesList">
+  </div>
+  <script>
+    const Server = 'http://127.0.0.1:3000'
+    const ipc = require('electron').ipcRenderer
+    const fs = require('fs')
+    const request = require('request')
+  
+    var userHash = ipc.sendSync('send-home-dir-hash','Hash')
+  
+    request.post(Server + "/downloadfileslist", {form: { hash: userHash}}, function(err, response, responsebody){
+        var fileData = JSON.parse(responsebody)
+       for(var i=0;i<fileData.Files.length;i++){
+          
+          var divisonData = document.getElementById('filesList')
+          var attrBute = document.createElement('a')
+          attrBute.setAttribute('class','collection-item')
+          attrBute.innerHTML = "Name: " + fileData.Files[i].fileName + " |--------------------| Size: " + fileData.Files[i].fileSize.toFixed(2) + " MB"
+          attrBute.setAttribute('href','#')
+          attrBute.setAttribute('id',fileData.Files[i].fileName)
+          attrBute.setAttribute('onclick','openFileWindow(this.id)')
+          divisonData.appendChild(attrBute)
+        }
+    })
+  
+    function openFileWindow(fileName){
+        alert(fileName)
+        ipc.send('save-dialog')
+
+        ipc.on('saved-file', function (event, path) {
+          alert(path)
+          request("http://localhost/Cloud-based-File-Converter/server/users/" + userHash + "/downloads/" + fileName).pipe(fs.createWriteStream(path))
+        })
+    }
+
+    
+  
+  
+  
+  </script>
+
 </body>
 </html>
