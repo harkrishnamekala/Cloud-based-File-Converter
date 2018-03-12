@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-      <!--Import Google Icon Font-->
-      <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+     
       <!--Import materialize.css-->
       <link type="text/css" rel="stylesheet" href="css/materialize.min.css" media="screen,projection" />
       <link rel="stylesheet" href="dist/css/dropify.min.css">
@@ -50,7 +49,7 @@
 
 
   <script>
-    const Server = 'http://127.0.0.1:3000'
+    const Server = 'http://159.89.165.151:3000'
     const ipc = require('electron').ipcRenderer
     const fs = require('fs')
     const request = require('request')
@@ -59,7 +58,7 @@
 
     var userHash = ipc.sendSync('send-home-dir-hash','Hash')
     var fileName = ipc.sendSync('get-file-name-path-for-conv')
-    alert(fileName)
+    //alert(fileName)
     var pattern = /\.([0-9a-z]+)(?:[\?#]|$)/i
 
     var extensionArray = (fileName).match(pattern)
@@ -67,9 +66,9 @@
     localFileType = extensionArray[1]
 
     request.post(Server + '/createaconversionrequest',{ form: { fileType: localFileType}} ,function(error, response, responsebody){
-        alert(responsebody)
+        //alert(responsebody)
         var responsebodypar = JSON.parse(responsebody)
-        alert(responsebodypar.targets.length)
+        //alert(responsebodypar.targets.length)
         for(var i=0; i<responsebodypar.targets.length;i++){
           console.log(responsebodypar.targets[i].name)
           var divisonData = document.getElementById('namesList')

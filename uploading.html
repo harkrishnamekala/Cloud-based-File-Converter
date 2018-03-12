@@ -2,8 +2,7 @@
 <html lang="en">
 
 <head>
-    <!--Import Google Icon Font-->
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    
     <!--Import materialize.css-->
     <link type="text/css" rel="stylesheet" href="css/materialize.min.css" media="screen,projection" />
     <link rel="stylesheet" href="dist/css/dropify.min.css">
@@ -25,7 +24,7 @@
 
 </head>
 <body>
-        <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+        <script type="text/javascript" src="jquery3/jquery-3.2.1.min.js"></script>
         <script type="text/javascript" src="js/materialize.min.js"></script>
         <script type="text/javascript" src="dist/js/dropify.min.js" ></script>
     <h1>Uplaoding The Data Please Wait</h1>
@@ -34,7 +33,7 @@
     </div>
 
     <script>
-        const Server = 'http://127.0.0.1:3000'
+        const Server = 'http://159.89.165.151:3000'
         const ipc = require('electron').ipcRenderer
         const fs = require('fs')
         const request = require('request')
@@ -49,8 +48,8 @@
 
         const fileobject = ipc.sendSync('sync-file-path-req',fileobjectex)
 
-        alert(fileobject.name)
-        alert(fileobject.filepath)
+        //alert(fileobject.name)
+        //alert(fileobject.filepath)
         var userHash = ipc.sendSync('send-home-dir-hash','Hash')
         filename = request.post(Server + "/filename",{form: {filename: fileobject.name, Hash: userHash}},function(error, response, body){
             console.log(error)

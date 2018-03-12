@@ -34,6 +34,7 @@
     "sha256": "^0.2.0"
   },
   "devDependencies": {
+    "electron-packager": "^11.1.0",
     "eslint": "^4.18.1",
     "eslint-config-google": "^0.9.1",
     "eslint-config-standard": "^11.0.0",

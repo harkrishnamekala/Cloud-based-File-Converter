@@ -12,10 +12,16 @@ let mainWindow
 let uploadWindow
 let userWindow
 
+var appIcon
+
+if(process.env.platform == "darwin")
+    appIcon = path.join(__dirname, 'appicon.icns')
+else
+    appIcon = path.join(__dirname, 'appicon.png')
 
 const ipc = require('electron').ipcMain
 const dialog = require('electron').dialog
-const Server = "http://127.0.0.1:3000"
+const Server = "http://159.89.165.151:3000"
 
 function setFilePath(serverFilePath){
     filePathOnServer = serverFilePath
@@ -33,7 +39,8 @@ ipc.on('save-dialog', function (event) {
 ipc.on('file-conversion-event', function(event,fileName){
     fileWindow = new BrowserWindow({
         width:800,
-        height:800
+        height:800,
+        icon: appIcon
     })
 
     fileWindow.loadURL(url.format({
@@ -63,7 +70,8 @@ ipc.on('file-upload-request', function (event, fileobject) {
     
     uploadWindow = new BrowserWindow({
         width: 600,
-        height:300
+        height:300,
+        icon: appIcon
     });
 
     uploadWindow.loadURL(url.format({
@@ -138,7 +146,8 @@ app.on('ready',function(){
     function createnewuserwindow(){
         userWindow = new BrowserWindow({
             width: 400,
-            height: 900
+            height: 900,
+            icon: appIcon
         })
     
         userWindow.loadURL(url.format({
@@ -180,8 +189,9 @@ app.on('ready',function(){
 
     function startmainWindows(){
         mainWindow = new BrowserWindow({
-            width: 1100,
-            height:670
+            width: 1200,
+            height:730,
+            icon: path.join(__dirname, 'appIcon.png')
         })
     
         mainWindow.loadURL(url.format({

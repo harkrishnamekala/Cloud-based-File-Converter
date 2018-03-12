@@ -1,9 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
-    <!--Import Google Icon Font-->
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <!--Import materialize.css-->
     <link type="text/css" rel="stylesheet" href="css/materialize.min.css" media="screen,projection" />
     <link rel="stylesheet" href="dist/css/dropify.min.css">
@@ -28,7 +25,7 @@
   <div class="collection" id="filesList">
   </div>
   <script>
-    const Server = 'http://127.0.0.1:3000'
+    const Server = 'http://159.89.165.151:3000'
     const ipc = require('electron').ipcRenderer
     const fs = require('fs')
     const request = require('request')
@@ -51,12 +48,12 @@
     })
   
     function openFileWindow(fileName){
-        alert(fileName)
+        //alert(fileName)
         ipc.send('save-dialog')
 
         ipc.on('saved-file', function (event, path) {
-          alert(path)
-          request("http://localhost/Cloud-based-File-Converter/server/users/" + userHash + "/downloads/" + fileName).pipe(fs.createWriteStream(path))
+          //alert(path)
+          request("http://159.89.165.151/" + userHash + "/downloads/" + fileName).pipe(fs.createWriteStream(path))
         })
     }
 
